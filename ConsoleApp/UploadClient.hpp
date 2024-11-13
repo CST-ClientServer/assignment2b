@@ -29,10 +29,10 @@ class UploadClient {
     int port;
 
     // private helper functions
-    sockaddr_in defineServer() const;
+    [[nodiscard]] sockaddr_in defineServer() const;
 public:
     explicit UploadClient(int port) : route(portRoutes[port]), port(port){};
-    string upload(vector<byte> bytes, string fileName);
+    string upload(vector<char>& bytes, string fileName);
 };
 
 #endif //ASSIGNMENT2B_UPLOADCLIENT_HPP
