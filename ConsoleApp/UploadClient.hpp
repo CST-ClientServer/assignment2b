@@ -34,7 +34,7 @@ class UploadClient {
     [[nodiscard]] sockaddr_in defineServer() const;
 public:
     explicit UploadClient(int port, string serverIp) : route(portRoutes[port]), port(port), serverIp(std::move(serverIp)){};
-    string upload(vector<char>& bytes, string fileName);
+    string upload(vector<char>& bytes, const string& fileName);
 };
 
 #endif //ASSIGNMENT2B_UPLOADCLIENT_HPP
