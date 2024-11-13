@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 using namespace std;
 
@@ -23,12 +25,13 @@ class UploadClient {
 
     // data members
     string route;
+    int port;
 
     // private helper functions
-
+    sockaddr_in defineServer() const;
 public:
-    explicit UploadClient(int port) : route(portRoutes[port]){};
-    void upload(vector<byte> bytes);
+    explicit UploadClient(int port) : route(portRoutes[port]), port(port){};
+    string upload(vector<byte> bytes);
 };
 
 #endif //ASSIGNMENT2B_UPLOADCLIENT_HPP
