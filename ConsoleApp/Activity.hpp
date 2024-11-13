@@ -17,7 +17,8 @@ class Activity {
     void extractFileBytes(vector<char>& byteVector) const;
     void printBodyContent(string content) const;
 public:
-    Activity(string& fileName, int port) : imageFileName(fileName), uploader(port){};
+    Activity(string& fileName, int port, const string& serverIp) : imageFileName(fileName), uploader(port, serverIp){};
+
     void runActivity();
 };
 
