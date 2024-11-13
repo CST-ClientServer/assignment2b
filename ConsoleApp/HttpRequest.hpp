@@ -17,7 +17,7 @@ class HttpRequest {
     string buildHeader(string host, string endpoint, int port) const;
 public:
     explicit HttpRequest(string contentType = "multipart/form-data") : contentType(std::move(contentType)){};
-    void addFile(vector<byte> fileBytes, string name);
+    void addFile(vector<char>& fileBytes, string name);
     void addText(string text, string name);
     string getRequestString(string host, string endpoint, int port) const;
 };
