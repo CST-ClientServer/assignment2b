@@ -1,11 +1,11 @@
 #include "HttpRequest.hpp"
-
-void HttpRequest::addFile(vector<byte> fileBytes, string name) {
+#include <iostream>
+void HttpRequest::addFile(vector<char>& fileBytes, string name) {
     string fileSection;
     fileSection.append("--").append(boundary).append(separator);
-    fileSection.append(contentDisposition).append("form-data; name=\"File\"; filename=\"").append(name).append("\"").append(separator);
+    fileSection.append(contentDisposition).append(R"(form-data; name="File"; filename=")").append(name).append("\"").append(separator);
     fileSection.append("Content-Type: application/octet-stream").append(separator).append(separator);
-    string fileAsStringBytes{reinterpret_cast<const char*>(&fileBytes[0], fileBytes.size())};
+    string fileAsStringBytes{fileBytes.begin(), fileBytes.end()};
     fileSection.append(fileAsStringBytes);
     requestComponents.push_back(fileSection);
 }
