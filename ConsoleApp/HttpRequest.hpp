@@ -9,17 +9,17 @@ using namespace std;
 
 class HttpRequest {
     const string separator = "\r\n";
-    const string boundary = "-------MyCustomBounds69420";
+    const string boundary = "d3f5Fjs8d7l2d9lEwJ6U3Shh4c9cG2Vw";
     const string contentDisposition = "Content-Disposition: ";
 
     vector<string> requestComponents;
     string contentType;
-    string buildHeader(string host, string endpoint, int port) const;
+    string buildHeader(const string& host, const string& endpoint, int port) const;
 public:
     explicit HttpRequest(string contentType = "multipart/form-data") : contentType(std::move(contentType)){};
-    void addFile(vector<char>& fileBytes, string name);
-    void addText(string text, string name);
-    string getRequestString(string host, string endpoint, int port) const;
+    void addFile(vector<char>& fileBytes, const string& name);
+    void addText(const string& text, const string& name);
+    string getRequestString(const string& host, const string& endpoint, int port) const;
 };
 
 #endif //ASSIGNMENT2B_HTTPREQUEST_HPP
