@@ -3,15 +3,15 @@
 #include <utility>
 
 sockaddr_in UploadClient::defineServer() const {
-    sockaddr_in serverAddress;
+    sockaddr_in serverAddress{};
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(port);
-    serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
     return serverAddress;
 }
 
-string UploadClient::upload(vector <byte> bytes, string fileName) {
-    cout << "----Creating client socket----" << endl;
+string UploadClient::upload(vector<char>& bytes, string fileName) {
+    cout << "----Creating Client socket----" << endl;
     // create client socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSocket < 0) {
@@ -19,8 +19,8 @@ string UploadClient::upload(vector <byte> bytes, string fileName) {
         exit(1);
     }
     cout << "----Establishing Connection With Server----" << endl;
-    // TODO Fix conneciton to server not working
     // connect to server
+    // TODO Fix socket not connecting to server
     sockaddr_in destinationServer = defineServer();
     if (connect(clientSocket, (struct sockaddr*)&destinationServer, sizeof(destinationServer)) < 0) {
         cout << "CRITICAL ERROR: failed to connect to server, exiting program" << endl;
@@ -31,13 +31,13 @@ string UploadClient::upload(vector <byte> bytes, string fileName) {
     HttpRequest request{};
     request.addText(caption, "caption");
     request.addText(date, "date");
-    request.addFile(std::move(bytes), std::move(fileName));
+    request.addFile(bytes, std::move(fileName));
 
     cout << "----Sending Post Request----" << endl;
     // send post request
     string requestString = request.getRequestString(host, route, port);
     size_t sentBytes = send(clientSocket, requestString.c_str(), requestString.size(), 0);
-    if (sentBytes < 0) {
+    if (sentBytes <= 0) {
         cout << "CRITICAL ERROR: failed to send data to server, exiting program" << endl;
         exit(1);
     }
