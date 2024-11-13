@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <utility>
 #include <vector>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -26,12 +27,13 @@ class UploadClient {
 
     // data members
     string route;
+    string serverIp;
     int port;
 
     // private helper functions
     [[nodiscard]] sockaddr_in defineServer() const;
 public:
-    explicit UploadClient(int port) : route(portRoutes[port]), port(port){};
+    explicit UploadClient(int port, string serverIp) : route(portRoutes[port]), port(port), serverIp(std::move(serverIp)){};
     string upload(vector<char>& bytes, string fileName);
 };
 
