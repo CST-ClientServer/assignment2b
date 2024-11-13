@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -31,7 +32,7 @@ class UploadClient {
     sockaddr_in defineServer() const;
 public:
     explicit UploadClient(int port) : route(portRoutes[port]), port(port){};
-    string upload(vector<byte> bytes);
+    string upload(vector<byte> bytes, string fileName);
 };
 
 #endif //ASSIGNMENT2B_UPLOADCLIENT_HPP
