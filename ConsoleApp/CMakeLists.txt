@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Assignment2b Driver.cpp
         UploadClient.cpp
+        UploadClient.hpp
         HttpResponse.cpp
+        HttpResponse.hpp
+        HttpRequest.cpp
         HttpRequest.hpp
-        Activity.cpp)
+        Activity.cpp
+        Activity.hpp)
