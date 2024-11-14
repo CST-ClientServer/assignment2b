@@ -42,10 +42,11 @@ string UploadClient::upload(vector<char>& bytes, const string& fileName) {
     cout << "----Waiting For Server Response----" << endl;
     // get response data
     string responseString;
-    size_t bufferSize = 8192;
+    size_t bufferSize = 1024, bytesRead;
     char buffer[bufferSize];
-    while (read(clientSocket, buffer, bufferSize) > 0) {
-        responseString.append(buffer);
+    while((bytesRead = recv(clientSocket, buffer, bufferSize, 0)) >= 0) {
+        responseString.append(buffer, bytesRead);
+        if (bytesRead < bufferSize) break;
     }
 
     cout << "----Closing Connection----" << endl;
