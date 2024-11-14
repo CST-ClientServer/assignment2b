@@ -8,7 +8,7 @@
 UploadServerThread::UploadServerThread(int clientSocket) : clientSocket(clientSocket) {}
 
 void* UploadServerThread::run(void* arg) {
-    int clientSocket = *((int*)arg);  // cast arg back to client socket
+    int clientSocket = *static_cast<int *>(arg);  // cast arg back to client socket
 
     try {
         // create request and response objects
