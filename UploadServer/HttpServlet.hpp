@@ -1,7 +1,6 @@
 #ifndef HTTPSERVLET_HPP
 #define HTTPSERVLET_HPP
 
-
 class HttpServlet {
 public:
     virtual void doGet(int clientSocket) = 0;
