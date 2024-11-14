@@ -19,7 +19,7 @@ int main() {
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;  // bind to any available network interface
-    serverAddr.sin_port = htons(8082);  // set the port number
+    serverAddr.sin_port = htons(8999);  // set the port number
 
     // bind the socket to the address and port
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
@@ -33,7 +33,7 @@ int main() {
         std::cerr << std::endl;
     }
 
-    std::cout << "Server is listening on port " << serverAddr.sin_port << std::endl;
+    std::cout << "Server is actually listening on port " << ntohs(serverAddr.sin_port) << std::endl;
 
     while (true) {
         int clientSocket = accept(serverSocket, nullptr, nullptr);  // accept client connection
