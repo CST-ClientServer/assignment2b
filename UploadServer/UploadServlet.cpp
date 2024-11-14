@@ -30,7 +30,7 @@ std::string UploadServlet::generateFileName() {
     auto duration = now.time_since_epoch();
     long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 
-    // return a file name based on the current timestamp, e.g., "1636557200000.png"
+    // return a file name based on the current timestamp
     return std::to_string(milliseconds) + ".png";
 }
 
