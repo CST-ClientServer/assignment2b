@@ -1,6 +1,8 @@
 #ifndef HTTPSERVLETREQUEST_HPP
 #define HTTPSERVLETREQUEST_HPP
-#include <io.h>
+
+#include <sys/types.h>
+#include <sys/unistd.h>
 
 class HttpServletRequest {
 public:
