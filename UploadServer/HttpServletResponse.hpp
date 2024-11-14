@@ -1,30 +1,20 @@
 #ifndef HTTPSERVLETRESPONSE_HPP
 #define HTTPSERVLETRESPONSE_HPP
 
+#include <string>
 #include <unistd.h>
-#include <cstddef>
-#include <sys/socket.h>
 
 class HttpServletResponse {
 public:
-    // constructor
     explicit HttpServletResponse(int clientSocket) : clientSocket(clientSocket) {}
 
-    // returns the socket file descriptor used for writing data.
-    int getOutputStream() {
-        return clientSocket;
+    // write data to the response
+    void write(const std::string& data) {
+        ::write(clientSocket, data.c_str(), data.size()); // write directly to the socket
     }
 
-    // writes data to the client socket.
-    // param - buffer: pointer to the data to write to the socket.
-    // param - size: number of bytes to write.
-    // returns the number of bytes written.
-    ssize_t write(const char* buffer, size_t size) {
-        return ::write(clientSocket, buffer, size);
-    }
-
-    //  destructor closes the client socket if it is open.
     ~HttpServletResponse() {
+        // destructor to close socket
         if (clientSocket != -1) {
             ::close(clientSocket);
             clientSocket = -1;
@@ -32,7 +22,8 @@ public:
     }
 
 private:
-    int clientSocket;  // socket file descriptor for the client connection.
+    int clientSocket; // Socket descriptor
 };
+
 
 #endif

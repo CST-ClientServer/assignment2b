@@ -1,5 +1,6 @@
 #ifndef HTTPSERVLETREQUEST_HPP
 #define HTTPSERVLETREQUEST_HPP
+#include <io.h>
 
 class HttpServletRequest {
 public:
