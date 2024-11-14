@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include "UploadServerThread.hpp"
 
-void main() {
+int main() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serverAddr{};
     pthread_t pthread;
@@ -55,4 +55,7 @@ void main() {
         // detach the thread so it can clean up resources when finished
         pthread_detach(pthread);
     }
+
+    close(serverSocket);
+    return 0;
 }
