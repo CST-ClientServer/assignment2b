@@ -10,4 +10,6 @@ add_executable(Assignment2b ConsoleApp/Driver.cpp
         ConsoleApp/Activity.cpp
         UploadServer/HttpServlet.hpp
         UploadServer/main.cpp
-        UploadServer/UploadServlet.cpp)
+        UploadServer/UploadServlet.cpp
+        UploadServer/HttpServletRequest.hpp
+        UploadServer/HttpServletResponse.hpp)
