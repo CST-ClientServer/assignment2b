@@ -1,16 +1,14 @@
 #include "UploadClient.hpp"
 
-#include <utility>
-
 sockaddr_in UploadClient::defineServer() const {
     sockaddr_in serverAddress{};
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(port);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    serverAddress.sin_addr.s_addr = inet_addr(serverIp.c_str());
     return serverAddress;
 }
 
-string UploadClient::upload(vector<char>& bytes, string fileName) {
+string UploadClient::upload(vector<char>& bytes, const string& fileName) {
     cout << "----Creating Client socket----" << endl;
     // create client socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -20,7 +18,6 @@ string UploadClient::upload(vector<char>& bytes, string fileName) {
     }
     cout << "----Establishing Connection With Server----" << endl;
     // connect to server
-    // TODO Fix socket not connecting to server
     sockaddr_in destinationServer = defineServer();
     if (connect(clientSocket, (struct sockaddr*)&destinationServer, sizeof(destinationServer)) < 0) {
         cout << "CRITICAL ERROR: failed to connect to server, exiting program" << endl;
@@ -31,7 +28,7 @@ string UploadClient::upload(vector<char>& bytes, string fileName) {
     HttpRequest request{};
     request.addText(caption, "caption");
     request.addText(date, "date");
-    request.addFile(bytes, std::move(fileName));
+    request.addFile(bytes, fileName);
 
     cout << "----Sending Post Request----" << endl;
     // send post request
@@ -45,12 +42,10 @@ string UploadClient::upload(vector<char>& bytes, string fileName) {
     cout << "----Waiting For Server Response----" << endl;
     // get response data
     string responseString;
-    size_t readBytes;
-    char buffer[4096];
-    readBytes = recv(clientSocket, buffer, sizeof(buffer), 0) > 0;
-    while (readBytes) {
-        responseString.append(buffer, readBytes);
-        readBytes = recv(clientSocket, buffer, sizeof(buffer), 0) > 0;
+    size_t bufferSize = 8192;
+    char buffer[bufferSize];
+    while (read(clientSocket, buffer, bufferSize) > 0) {
+        responseString.append(buffer);
     }
 
     cout << "----Closing Connection----" << endl;
