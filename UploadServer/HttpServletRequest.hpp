@@ -14,6 +14,7 @@ public:
         return ::read(clientSocket, buffer, size);
     }
 
+    // destructor closes the client socket if it is open.
     ~HttpServletRequest() {
         if (clientSocket != -1) {
             ::close(clientSocket);
