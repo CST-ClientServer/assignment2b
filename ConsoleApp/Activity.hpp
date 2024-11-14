@@ -14,9 +14,11 @@ class Activity {
     UploadClient uploader;
 
     // helper functions
-    void extractFileBytes(vector<byte>& byteVector);
+    void extractFileBytes(vector<char>& byteVector) const;
+    static void printBodyContent(string& content);
 public:
-    Activity(string& fileName, int port) : imageFileName(fileName), uploader(port){};
+    Activity(string& fileName, int port, const string& serverIp) : imageFileName(fileName), uploader(port, serverIp){};
+
     void runActivity();
 };
 
