@@ -11,7 +11,7 @@ class HttpResponse {
     string response;
     int statusCode;
 public:
-    explicit HttpResponse(string response);
+    explicit HttpResponse(string& response);
     string extractBody();
     [[nodiscard]] int getStatusCode() const { return statusCode; };
 };
