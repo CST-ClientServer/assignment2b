@@ -19,7 +19,7 @@ void Activity::runActivity() {
     printBodyContent(responseContent);
 }
 
-void Activity::printBodyContent(string content) const {
+void Activity::printBodyContent(string& content) {
     // print content directly if response was not html page
     if (content.find("<html>") < 0) {
         cout << content << endl;
@@ -28,10 +28,10 @@ void Activity::printBodyContent(string content) const {
     // parse the html page for the listing
     regex const pattern{R"(<[^>]*>([^<]*\b\w+\.[^<]+)<\/[^>]*>)"};
     smatch matches;
-    if (regex_match(content, matches, pattern)) {
-        for (auto match : matches) {
-            cout << match << endl;
-        }
+    auto startPoint = content.cbegin();
+    while(regex_search(startPoint, content.cend(), matches, pattern)) {
+        cout << matches[1] << endl;
+        startPoint = matches[0].second;
     }
 }
 

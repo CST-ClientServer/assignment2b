@@ -15,7 +15,7 @@ class Activity {
 
     // helper functions
     void extractFileBytes(vector<char>& byteVector) const;
-    void printBodyContent(string content) const;
+    static void printBodyContent(string& content);
 public:
     Activity(string& fileName, int port, const string& serverIp) : imageFileName(fileName), uploader(port, serverIp){};
 
