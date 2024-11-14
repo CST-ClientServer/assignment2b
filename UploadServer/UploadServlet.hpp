@@ -1,17 +1,22 @@
 #ifndef UPLOADSERVLET_HPP
 #define UPLOADSERVLET_HPP
 
+#include "HttpServlet.hpp"
 #include "HttpServletRequest.hpp"
 #include "HttpServletResponse.hpp"
 #include <string>
 #include <chrono>
 
-class UploadServlet {
+
+class UploadServlet : public HttpServlet {
 public:
-    // handle the POST request for file upload
-    void doPost(HttpServletRequest& req, HttpServletResponse& res);
+    void doGet(HttpServletRequest& request, HttpServletResponse& response) override;
+    void doPost(HttpServletRequest& request, HttpServletResponse& response) override;
 
 private:
+    // get html form
+    std::string getHtmlForm();
+
     // generate a unique file name based on current date
     std::string generateFileName();
 

@@ -3,6 +3,11 @@
 #include <fstream>
 #include <iostream>
 
+void UploadServlet::doGet(HttpServletRequest &request, HttpServletResponse &response) {
+    std::string htmlForm = getHtmlForm();
+    response.write(htmlForm);
+}
+
 void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     // reading the file content from the request
     char buffer[1024];
@@ -58,4 +63,41 @@ void UploadServlet::sendFileDetails(const std::string& fileName, HttpServletResp
 
     // response message to the client
     res.write(responseMessage.str());
+}
+
+std::string UploadServlet::getHtmlForm() {
+    std::ostringstream oss;
+    oss << "<!DOCTYPE html>"
+        << "<html lang=\"en\">"
+        << "<body>"
+        << "<script src=\"https://cdn.tailwindcss.com\"></script>"
+        << "<h2 class=\"text-2xl font-bold mb-6 text-center\">HTML Forms</h2>"
+        << "<form action=\"http://localhost:8082/assignment_war/\" method=\"post\" enctype=\"multipart/form-data\""
+           " class=\"max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-lg\">"
+        << "<div class=\"mb-4\">"
+        << "<label for=\"caption\" class=\"block text-lg font-semibold text-gray-700 mb-2\">Caption:</label>"
+        << "<input type=\"text\" name=\"caption\" id=\"caption\" class=\"w-full px-3 py-2 border"
+           " border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1"
+           " focus:ring-blue-500\" placeholder=\"Enter caption\">"
+        << "</div>"
+        << "<div class=\"mb-4\">"
+        << "<label for=\"date\" class=\"block text-lg font-semibold text-gray-700 mb-2\">Date:</label>"
+        << "<input type=\"date\" name=\"date\" id=\"date\" class=\"w-full px-3 py-2 border border-gray-300"
+           " rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500\">"
+        << "</div>"
+        << "<div class=\"mb-4\">"
+        << "<label for=\"file\" class=\"block text-lg font-semibold text-gray-700 mb-2\">File:</label>"
+        << "<input type=\"file\" name=\"File\" id=\"File\" accept=\"image/*,.txt\" class=\"w-full px-3 py-2 border"
+           " border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1"
+           " focus:ring-blue-500\">"
+        << "</div>"
+        << "<div class=\"text-center\">"
+        << "<input type=\"submit\" value=\"Submit\" class=\"px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg "
+           "shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50\">"
+        << "</div>"
+        << "</form>"
+        << "</body>"
+        << "</html>";
+
+    return oss.str();
 }
