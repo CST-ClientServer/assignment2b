@@ -10,4 +10,5 @@ add_executable(Assignment2b HttpServlet.hpp
         HttpServletResponse.hpp
         UploadServerThread.cpp
         UploadServerThread.hpp
+        UploadServer.cpp
         UploadServer.cpp)
