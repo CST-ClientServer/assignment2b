@@ -21,6 +21,21 @@ void* UploadServerThread::run(void* arg) {
         // servlet's doPost to process the file upload
         uploadServlet.doPost(req, res);
 
+        std::string path = req.getPath();
+        std::string method = req.getMethod();
+
+        std::cout<<path<<std::endl;
+        std::cout<<method<<std::endl;
+
+        if (path == "/upload" && method == "GET") {
+            uploadServlet.doGet(req, res);  // Handle GET request for uploading form
+        } else if (path == "/upload" && method == "POST") {
+            uploadServlet.doPost(req, res); // Handle POST request for file upload
+        } else {
+            // Handle other paths, if necessary
+            res.write("404 Not Found");
+        }
+
         close(clientSocket);
     } catch (const std::exception& e) {
         std::cerr << "Error in UploadServerThread: " << e.what() << std::endl;
