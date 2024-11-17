@@ -54,16 +54,6 @@ private:
             std::cout << "Total bytes read so far: " << totalBytesRead << std::endl;
             std::cout << "Bytes remaining in buffer: " << sizeof(buffer) - totalBytesRead << std::endl;
 
-
-
-            if (bytesRead == 0) {
-                std::cerr << "Client closed the connection." << std::endl;
-                break;  // 客户端关闭连接，退出循环
-            }
-            if (bytesRead < 0) {
-                std::cerr << "Error reading from client." << std::endl;
-                break;  // 读取错误，退出循环
-            }
             if (strstr(buffer, "\r\n\r\n") != nullptr) {
                 break;
             }
