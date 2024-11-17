@@ -123,9 +123,6 @@ private:
                         boundary.erase(0, boundary.find_first_not_of(" \t\r\n"));
                         boundary.erase(boundary.find_last_not_of(" \t\r\n") + 1);
 
-                        if (boundary.back() == '/') {
-                            boundary.pop_back();
-                        }
                     }
 
                 }
@@ -145,6 +142,7 @@ private:
                 std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)boundary[i];
             }
         }
+        std::cout << std::endl;
 
 
     }
