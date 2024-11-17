@@ -39,7 +39,40 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
 
     // save the uploaded file to disk
 //    saveFile(fileName, fileContent.str());
-    saveFile(fileName, req.getContent());
+    std::string body = req.getContent();
+    size_t boundaryPos = 0;
+    size_t startPos = 0;
+    std::string boundary = req.getBoundary();
+
+    while ((boundaryPos = body.find(boundary, startPos)) != std::string::npos) {
+        startPos = boundaryPos + boundary.size() + 2; // 跳过boundary和'\r\n'
+        size_t endPos = body.find(boundary, startPos);
+
+        if (endPos == std::string::npos) {
+            break;
+        }
+
+        std::string part = body.substr(startPos, endPos - startPos);
+
+        size_t contentDispositionPos = part.find("Content-Disposition: ");
+        if (contentDispositionPos != std::string::npos) {
+            size_t filenamePos = part.find("filename=\"", contentDispositionPos);
+            if (filenamePos != std::string::npos) {
+                filenamePos += 10; // 跳过 'filename="'
+                size_t filenameEndPos = part.find("\"", filenamePos);
+                std::string filename = part.substr(filenamePos, filenameEndPos - filenamePos);
+
+                // 提取文件内容
+                size_t fileContentPos = part.find("\r\n\r\n", contentDispositionPos);
+                if (fileContentPos != std::string::npos) {
+                    std::string fileContent = part.substr(fileContentPos + 4);  // 跳过 \r\n\r\n
+                    saveFile("/images/" + filename, fileContent);  // 保存文件
+                }
+            }
+        }
+
+        startPos = endPos;
+    }
     // send a response with file details
     sendFileDetails(fileName, res);
 }

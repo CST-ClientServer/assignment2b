@@ -66,7 +66,7 @@ private:
     std::vector<std::pair<std::string, std::string>> files;
 
     void readRequestHeader () {
-        char buffer[2048];
+        char buffer[1024];
         ssize_t totalBytesRead = 0;
         ssize_t bytesRead = 0;
         std::ostringstream fileContent;
@@ -78,33 +78,13 @@ private:
             if (bytesRead < sizeof buffer) {
                 break;
             }
-            if (totalBytesRead >= sizeof(buffer)) {
-                std::cerr << "Buffer size exceeded" << std::endl;
-                break;
-            }
         }
         content = fileContent.str();
 
-        buffer[totalBytesRead] = '\0';  // Null-terminate the string
-        std::cout << "buffer: " << buffer << std::endl;
+        content[totalBytesRead] = '\0';  // Null-terminate the string
 
-        //print out buffer content
-        for (size_t i = 0; i < totalBytesRead; ++i) {
-            if (buffer[i] == '\r') {
-                std::cout << "\\r";
-            } else if (buffer[i] == '\n') {
-                std::cout << "\\n";
-            } else if (isprint(buffer[i])) {
-                std::cout << buffer[i];
-            } else {
-                std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)buffer[i];
-            }
-        }
-        std::cout << std::endl;
 
-        std::string header(buffer);
-        std::cout << "header: " << header << std::endl;
-        std::istringstream requestStream(header);
+        std::istringstream requestStream(content);
 
         requestStream >> method >> path;
 
@@ -143,6 +123,17 @@ private:
             }
         }
         std::cout << std::endl;
+        for (size_t i = 0; i < size(content); ++i) {
+            if (content[i] == '\r') {
+                std::cout << "\\r";
+            } else if (content[i] == '\n') {
+                std::cout << "\\n";
+            } else if (isprint(content[i])) {
+                std::cout << content[i];
+            } else {
+                std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)content[i];
+            }
+        }
 
 
     }
