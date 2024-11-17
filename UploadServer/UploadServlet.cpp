@@ -30,6 +30,18 @@ void UploadServlet::doGet(HttpServletRequest &request, HttpServletResponse &resp
 }
 
 void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
+
+    std::ostringstream fileResponse;
+    fileResponse << "HTTP/1.1 200 OK\r\n";
+    fileResponse << "Access-Control-Allow-Origin: *\r\n";
+    fileResponse << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+    fileResponse << "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
+    fileResponse << "\r\n";
+    fileResponse << "File uploaded successfully.";
+
+
+    res.write(fileResponse.str());
+
     // reading the file content from the request
     char buffer[2048];
     ssize_t bytesRead = 0;
