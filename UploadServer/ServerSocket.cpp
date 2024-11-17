@@ -7,7 +7,6 @@ ServerSocket::ServerSocket(int port) {
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
         perror("opening stream socket");
-        exit(EXIT_FAILURE);
     }
 
     serverAddr.sin_family = AF_INET;
@@ -16,12 +15,10 @@ ServerSocket::ServerSocket(int port) {
 
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         perror("binding stream socket");
-        exit(EXIT_FAILURE);
     }
 
     if (listen(serverSocket, 5) < 0) {
         perror("listening stream socket");
-        exit(EXIT_FAILURE);
     }
 
     std::cout << "Server is listening on port " << port << std::endl;

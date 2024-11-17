@@ -5,6 +5,7 @@
 #include <sys/unistd.h>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 
 class HttpServletRequest {
 public:
@@ -44,20 +45,54 @@ private:
 
     void readRequest() {
         char buffer[1024];
-        ssize_t bytesRead = ::read(clientSocket, buffer, sizeof(buffer) - 1);
+        ssize_t totalBytesRead = 0;
+        ssize_t bytesRead = 0;
+
+        while ((bytesRead = ::read(clientSocket, buffer + totalBytesRead, sizeof(buffer) - totalBytesRead)) > 0) {
+            totalBytesRead += bytesRead;
+            std::cout << "Bytes read: " << bytesRead << std::endl;
+            std::cout << "Total bytes read so far: " << totalBytesRead << std::endl;
+            std::cout << "Bytes remaining in buffer: " << sizeof(buffer) - totalBytesRead << std::endl;
+
+
+
+            if (bytesRead == 0) {
+                std::cerr << "Client closed the connection." << std::endl;
+                break;  // 客户端关闭连接，退出循环
+            }
+            if (bytesRead < 0) {
+                std::cerr << "Error reading from client." << std::endl;
+                break;  // 读取错误，退出循环
+            }
+            if (strstr(buffer, "\r\n\r\n") != nullptr) {
+                break;
+            }
+            if (totalBytesRead >= sizeof(buffer)) {
+                std::cerr << "Buffer size exceeded" << std::endl;
+                break;
+            }
+        }
 
         if (bytesRead <= 0) {
             std::cerr << "Error reading request." << std::endl;
             return;
         }
 
-        buffer[bytesRead] = '\0';
+        buffer[totalBytesRead] = '\0';  // Null-terminate the string
+        std::cout << "Request data: " << buffer << std::endl;
 
         std::string request(buffer);
         std::istringstream requestStream(request);
 
         requestStream >> method >> path;
+
+        std::cout << "Method: " << method << std::endl;
+        std::cout << "Path: " << path << std::endl;
+
+        std::string line;
+
     }
+
 };
 
 

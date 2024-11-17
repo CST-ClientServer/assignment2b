@@ -4,21 +4,32 @@
 #include <iostream>
 
 void UploadServlet::doGet(HttpServletRequest &request, HttpServletResponse &response) {
+    std::ostringstream header;
+    header << "HTTP/1.1 200 OK\r\n";
+    header << "Content-Type: text/html; charset=UTF-8\r\n";
+    header << "Content-Length: " << getHtmlForm().size() << "\r\n";
+    header << "\r\n";
+
+    response.write(header.str());
     std::string htmlForm = getHtmlForm();
     response.write(htmlForm);
 }
 
 void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     // reading the file content from the request
-    char buffer[1024];
+    char buffer[2048];
     ssize_t bytesRead = 0;
     std::ostringstream fileContent;
 
     // read the content of the uploaded file
     while ((bytesRead = req.read(buffer, sizeof(buffer))) > 0) {
+        std::cout << "Bytes read!!!: " << bytesRead << std::endl;
         fileContent.write(buffer, bytesRead);
     }
-
+    std::cout << "end " << bytesRead << std::endl;
+    if (bytesRead <= 0) {
+        std::cerr << "Error or no data read from request." << std::endl;
+    }
     // generate a unique file name
     std::string fileName = generateFileName();
 
