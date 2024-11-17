@@ -5,7 +5,18 @@
 #include <filesystem>
 #include <sys/stat.h>
 
-
+void ensureDirectoryExists(const std::string& dirPath) {
+    if (!std::filesystem::exists(dirPath)) {
+        try {
+            std::filesystem::create_directories(dirPath);
+            std::cout << "Directory created: " << dirPath << std::endl;
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Error creating directory: " << e.what() << std::endl;
+        }
+    } else {
+        std::cout << "Directory already exists: " << dirPath << std::endl;
+    }
+}
 void UploadServlet::doGet(HttpServletRequest &request, HttpServletResponse &response) {
     std::ostringstream header;
     header << "HTTP/1.1 200 OK\r\n";
@@ -45,7 +56,7 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     std::string boundary = req.getBoundary();
 
     while ((boundaryPos = body.find(boundary, startPos)) != std::string::npos) {
-        startPos = boundaryPos + boundary.size() + 2; // 跳过boundary和'\r\n'
+        startPos = boundaryPos + boundary.size() + 2;
         size_t endPos = body.find(boundary, startPos);
 
         if (endPos == std::string::npos) {
@@ -58,15 +69,16 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
         if (contentDispositionPos != std::string::npos) {
             size_t filenamePos = part.find("filename=\"", contentDispositionPos);
             if (filenamePos != std::string::npos) {
-                filenamePos += 10; // 跳过 'filename="'
+                filenamePos += 10;
                 size_t filenameEndPos = part.find("\"", filenamePos);
                 std::string filename = part.substr(filenamePos, filenameEndPos - filenamePos);
 
-                // 提取文件内容
                 size_t fileContentPos = part.find("\r\n\r\n", contentDispositionPos);
                 if (fileContentPos != std::string::npos) {
-                    std::string fileContent = part.substr(fileContentPos + 4);  // 跳过 \r\n\r\n
-                    saveFile("/images/" + filename, fileContent);  // 保存文件
+                    std::string fileContent = part.substr(fileContentPos + 4);
+                    std::string dirPath = "../images";
+                    ensureDirectoryExists(dirPath);
+                    saveFile("../images/" + filename, fileContent);
                 }
             }
         }
@@ -76,6 +88,8 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     // send a response with file details
     sendFileDetails(fileName, res);
 }
+
+
 
 std::string UploadServlet::generateFileName() {
     // get the current time in milliseconds since the epoch
