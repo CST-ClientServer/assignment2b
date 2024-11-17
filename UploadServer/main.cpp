@@ -5,7 +5,7 @@
 #include "UploadServerThread.hpp"
 
 int main() {
-    ServerSocket server(8083);  // Create server on port 8083
+    ServerSocket server(8082);  // Create server on port 8083
     pthread_t pthread;
 
     while (true) {

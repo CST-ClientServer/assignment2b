@@ -2,6 +2,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <filesystem>
+#include <sys/stat.h>
+
 
 void UploadServlet::doGet(HttpServletRequest &request, HttpServletResponse &response) {
     std::ostringstream header;
@@ -21,21 +24,22 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     ssize_t bytesRead = 0;
     std::ostringstream fileContent;
 
-    // read the content of the uploaded file
-    while ((bytesRead = req.read(buffer, sizeof(buffer))) > 0) {
-        std::cout << "Bytes read!!!: " << bytesRead << std::endl;
-        fileContent.write(buffer, bytesRead);
-    }
-    std::cout << "end " << bytesRead << std::endl;
-    if (bytesRead <= 0) {
-        std::cerr << "Error or no data read from request." << std::endl;
-    }
+//    // read the content of the uploaded file
+//    while ((bytesRead = req.read(buffer, sizeof(buffer))) > 0) {
+//        std::cout << "Bytes read!!!: " << bytesRead << std::endl;
+//        fileContent.write(buffer, bytesRead);
+//        if (bytesRead < sizeof buffer) {
+//            break;
+//        }
+//    }
+    std::cout << "end " << std::endl;
+
     // generate a unique file name
-    std::string fileName = generateFileName();
+    std::string fileName = "/images/"+generateFileName();
 
     // save the uploaded file to disk
-    saveFile(fileName, fileContent.str());
-
+//    saveFile(fileName, fileContent.str());
+    saveFile(fileName, req.getContent());
     // send a response with file details
     sendFileDetails(fileName, res);
 }
@@ -51,10 +55,11 @@ std::string UploadServlet::generateFileName() {
 }
 
 void UploadServlet::saveFile(const std::string& fileName, const std::string& content) {
-    // open the file in binary mode and write the content to it
-    if (std::ofstream outFile(fileName, std::ios::binary); outFile.is_open()) {
-        outFile.write(content.c_str(), content.size());
-        outFile.close();
+    std::ofstream outFile(fileName, std::ios::binary);  // Open file in binary mode
+    if (outFile.is_open()) {
+        outFile.write(content.c_str(), content.size());  // Write the file content
+        outFile.close();  // Close the file after writing
+        std::cout << "File saved as: " << fileName << std::endl;
     } else {
         std::cerr << "Failed to save file: " << fileName << std::endl;
     }
@@ -83,7 +88,7 @@ std::string UploadServlet::getHtmlForm() {
         << "<body>"
         << "<script src=\"https://cdn.tailwindcss.com\"></script>"
         << "<h2 class=\"text-2xl font-bold mb-6 text-center\">HTML Forms</h2>"
-        << "<form action=\"http://localhost:8082/assignment_war/\" method=\"post\" enctype=\"multipart/form-data\""
+        << "<form action=\"http://localhost:8082/\" method=\"post\" enctype=\"multipart/form-data\""
            " class=\"max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-lg\">"
         << "<div class=\"mb-4\">"
         << "<label for=\"caption\" class=\"block text-lg font-semibold text-gray-700 mb-2\">Caption:</label>"
