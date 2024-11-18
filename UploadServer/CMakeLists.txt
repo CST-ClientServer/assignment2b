@@ -12,4 +12,4 @@ add_executable(Assignment2b HttpServlet.hpp
         UploadServerThread.hpp
         ServerSocket.cpp
         ServerSocket.hpp
-        main.cpp)
+        UploadServer.cpp)
