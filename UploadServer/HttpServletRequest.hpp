@@ -73,8 +73,8 @@ private:
         while ((bytesRead = read(buffer, sizeof(buffer))) > 0) {
             totalBytesRead += bytesRead;
             fileContent.write(buffer, bytesRead);
-            std::cout << "Bytes read: " << bytesRead << std::endl;
-            std::cout << "Total bytes read so far: " << totalBytesRead << std::endl;
+            // std::cout << "Bytes read: " << bytesRead << std::endl;
+            // std::cout << "Total bytes read so far: " << totalBytesRead << std::endl;
             if (bytesRead < sizeof buffer) {
                 break;
             }
@@ -109,32 +109,32 @@ private:
             }
         }
 
-        //print out boundary
-        std::cout << "boundary: " << std::endl;
-        for (size_t i = 0; i < size(boundary); ++i) {
-            if (boundary[i] == '\r') {
-                std::cout << "\\r";
-            } else if (boundary[i] == '\n') {
-                std::cout << "\\n";
-            } else if (isprint(boundary[i])) {
-                std::cout << boundary[i];
-            } else {
-                std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)boundary[i];
-            }
-        }
-        std::cout << std::endl;
-        for (size_t i = 0; i < size(content); ++i) {
-            if (content[i] == '\r') {
-                std::cout << "\\r";
-            } else if (content[i] == '\n') {
-                std::cout << "\\n";
-            } else if (isprint(content[i])) {
-                std::cout << content[i];
-            } else {
-                std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)content[i];
-            }
-        }
-
+        // //print out boundary
+        // std::cout << "boundary: " << std::endl;
+        // for (size_t i = 0; i < size(boundary); ++i) {
+        //     if (boundary[i] == '\r') {
+        //         std::cout << "\\r";
+        //     } else if (boundary[i] == '\n') {
+        //         std::cout << "\\n";
+        //     } else if (isprint(boundary[i])) {
+        //         std::cout << boundary[i];
+        //     } else {
+        //         std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)boundary[i];
+        //     }
+        // }
+        // std::cout << std::endl;
+        // for (size_t i = 0; i < size(content); ++i) {
+        //     if (content[i] == '\r') {
+        //         std::cout << "\\r";
+        //     } else if (content[i] == '\n') {
+        //         std::cout << "\\n";
+        //     } else if (isprint(content[i])) {
+        //         std::cout << content[i];
+        //     } else {
+        //         std::cout << "\\x" << std::hex << (unsigned int)(unsigned char)content[i];
+        //     }
+        // }
+        //
 
     }
 
