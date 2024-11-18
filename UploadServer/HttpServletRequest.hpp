@@ -2,7 +2,7 @@
 #define HTTPSERVLETREQUEST_HPP
 
 #include <sys/types.h>
-#include <sys/unistd.h>
+#include <unistd.h>
 #include <sstream>
 #include <iostream>
 #include <string.h>
