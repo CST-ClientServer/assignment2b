@@ -36,6 +36,11 @@ int ServerSocket::acceptConnection() {
 void ServerSocket::closeSocket() {
     if (serverSocket >= 0) {
         close(serverSocket);
+        std::cout << "Socket closed." << std::endl;
         serverSocket = -1;
     }
+}
+
+ServerSocket::~ServerSocket() {
+    closeSocket();
 }

@@ -12,11 +12,9 @@ public:
     ServerSocket(int port);
     int acceptConnection();
     void closeSocket();
+    ~ServerSocket();
 
 private:
     int serverSocket;
     struct sockaddr_in serverAddr{};
 };
-
-
-
