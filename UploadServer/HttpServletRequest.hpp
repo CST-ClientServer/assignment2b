@@ -70,6 +70,7 @@ private:
         ssize_t totalBytesRead = 0;
         ssize_t bytesRead = 0;
         std::ostringstream fileContent;
+        sleep(1);
         while ((bytesRead = read(buffer, sizeof(buffer))) > 0) {
             totalBytesRead += bytesRead;
             fileContent.write(buffer, bytesRead);
