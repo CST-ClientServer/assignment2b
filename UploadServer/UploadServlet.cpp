@@ -1,5 +1,6 @@
 #include "UploadServlet.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <filesystem>
@@ -37,8 +38,6 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
     fileResponse << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
     fileResponse << "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
     fileResponse << "\r\n";
-    fileResponse << "File uploaded successfully.";
-
 
     res.write(fileResponse.str());
 
@@ -57,15 +56,12 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
 //    }
     std::cout << "end " << std::endl;
 
-    // generate a unique file name
-    std::string fileName = "/images/"+generateFileName();
-
     // save the uploaded file to disk
 //    saveFile(fileName, fileContent.str());
     std::string body = req.getContent();
+    std::string boundary = req.getBoundary();
     size_t boundaryPos = 0;
     size_t startPos = 0;
-    std::string boundary = req.getBoundary();
 
     while ((boundaryPos = body.find(boundary, startPos)) != std::string::npos) {
         startPos = boundaryPos + boundary.size() + 2;
@@ -77,40 +73,53 @@ void UploadServlet::doPost(HttpServletRequest& req, HttpServletResponse& res) {
 
         std::string part = body.substr(startPos, endPos - startPos);
 
-        size_t contentDispositionPos = part.find("Content-Disposition: ");
-        if (contentDispositionPos != std::string::npos) {
-            size_t filenamePos = part.find("filename=\"", contentDispositionPos);
-            if (filenamePos != std::string::npos) {
-                filenamePos += 10;
-                size_t filenameEndPos = part.find("\"", filenamePos);
-                std::string filename = part.substr(filenamePos, filenameEndPos - filenamePos);
+        auto cleanString = [](std::string& str) {
+            str.erase(std::remove_if(str.begin(), str.end(), [](const char c) {
+                return !std::isalnum(c);
+            }), str.end());
+            str += "--";
+        };
 
-                size_t fileContentPos = part.find("\r\n\r\n", contentDispositionPos);
-                if (fileContentPos != std::string::npos) {
-                    std::string fileContent = part.substr(fileContentPos + 4);
-                    std::string dirPath = "../images";
-                    ensureDirectoryExists(dirPath);
-                    saveFile("../images/" + filename, fileContent);
-                }
+        size_t contentDispositionPos = part.find("Content-Disposition: ");
+    if (contentDispositionPos != std::string::npos) {
+        size_t captionPos = part.find("name=\"caption\"", contentDispositionPos);
+        if (captionPos != std::string::npos) {
+            size_t valuePos = part.find("\r\n\r\n", contentDispositionPos);
+            if (valuePos != std::string::npos) {
+                caption = part.substr(valuePos + 4);
+                cleanString(caption);
+                std::cout << "Caption: " << caption << std::endl;
             }
         }
-
-        startPos = endPos;
+        size_t datePos = part.find("name=\"date\"", contentDispositionPos);
+        if (datePos != std::string::npos) {
+            size_t valuePos = part.find("\r\n\r\n", contentDispositionPos);
+            if (valuePos != std::string::npos) {
+                date = part.substr(valuePos + 4);
+                cleanString(date);
+                std::cout << "Date: " << date << std::endl;
+            }
+        }
+        // Check for file fields like 'filename'
+        size_t filenamePos = part.find("filename=\"", contentDispositionPos);
+        if (filenamePos != std::string::npos) {
+            filenamePos += 10;  // Skip 'filename="'
+            size_t filenameEndPos = part.find("\"", filenamePos);
+            std::string filename = part.substr(filenamePos, filenameEndPos - filenamePos);
+            newFilename = date + caption + filename;
+            size_t fileContentPos = part.find("\r\n\r\n", contentDispositionPos);
+            if (fileContentPos != std::string::npos) {
+                std::string fileContent = part.substr(fileContentPos + 4);
+                std::string dirPath = "../images";
+                ensureDirectoryExists(dirPath);
+                saveFile("../images/" + newFilename, fileContent);
+            }
+        }
     }
-    // send a response with file details
-    sendFileDetails(fileName, res);
+    startPos = endPos;  // Move to the next part
 }
-
-
-
-std::string UploadServlet::generateFileName() {
-    // get the current time in milliseconds since the epoch
-    auto now = std::chrono::system_clock::now();
-    auto duration = now.time_since_epoch();
-    long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-
-    // return a file name based on the current timestamp
-    return std::to_string(milliseconds) + ".png";
+    // send a response with file details
+    sendFileDetails(newFilename, res);
 }
 
 void UploadServlet::saveFile(const std::string& fileName, const std::string& content) {

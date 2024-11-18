@@ -5,20 +5,20 @@
 #include "HttpServletRequest.hpp"
 #include "HttpServletResponse.hpp"
 #include <string>
-#include <chrono>
-
 
 class UploadServlet : public HttpServlet {
 public:
+    std::string filename;
+    std::string caption;
+    std::string date;
+    std::string newFilename;
+
     void doGet(HttpServletRequest& request, HttpServletResponse& response) override;
     void doPost(HttpServletRequest& request, HttpServletResponse& response) override;
 
 private:
     // get html form
     std::string getHtmlForm();
-
-    // generate a unique file name based on current date
-    std::string generateFileName();
 
     // save the uploaded file content to disk
     void saveFile(const std::string& fileName, const std::string& content);
